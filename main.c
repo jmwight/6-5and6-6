@@ -63,4 +63,42 @@ struct nlist *install(char *name; char *defn)
 	return np;
 }
 
+/* undef: undefines name from hashtab returns 1 if one undefined and 0 if
+ * nothing found */
+int undef(char *name)
+{
+	struct nlist *npcur, *npprev;
+	unsigned int hashval;
+	hashval = hash(name);
+	npcur = hashtab[hashval];
 
+	/* check if hashtab is null or if first one matches first */
+	if(npcur == NULL)
+		return 0; /* not found */
+	else if(strcmp(name, npcur) == 0)
+	{
+		hashtab[hashval] = npcur->next;
+		free((void *) npcur);
+		return 1; /* found */
+	}
+	else
+	{
+		npprev = npcur;
+		npcur = npcur->next;
+	}
+
+	/* walking along a linked list comparing with previous */
+	for( ; npcur != NULL; npcur = npcur->next)
+	{
+		if(strcmp(name, np->name) == 0)
+		{
+			/* make previous block point to block of after the
+			 * current one */
+			npprev->next = npcur->next;
+			free((void *) npcur);
+			return 1; /* found */
+		}
+		npprev = npcur;
+	}
+	return 0; /* not found */
+}

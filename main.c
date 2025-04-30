@@ -1,5 +1,3 @@
-
-
 #define HASHSIZE	101
 
 /* table entry */

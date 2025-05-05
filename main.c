@@ -59,8 +59,16 @@ int main(void)
 			else if(strcmp(w, "undef"))
 				;  /* TODO: finish this */
 
-			preprocdir = 0;
 		}
-
 	}
+}
+/* zoomwrite: writes all characters directly from getch into given buffer until
+ * ending sequence is reached */
+char *zoomwrite(char *bufp, char* endseq)
+{
+	int endseqlen, c;
+	endseqlen = strlen(endseq);
+	while((c = getch()) != EOF && strcmp(endseq, bufp[endseqlen * -1]) != 0)
+		*bufp++ = c;
+	return bufp;
 }

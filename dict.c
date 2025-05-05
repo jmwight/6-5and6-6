@@ -1,4 +1,6 @@
 #include "dict.h"
+#include <stdlib.h>
+#include <string.h>
 
 #define HASHSIZE	101
 
@@ -7,7 +9,7 @@ static struct nlist *hashtab[HASHSIZE]; /* pointer table */
 /* hash: form hash value for string s */
 unsigned int hash(char *s)
 {
-	unsigned int hash;
+	unsigned int hashval;
 
 	for(hashval = 0; *s != '\0'; s++)
 		hashval = *s + 31 * hashval;
@@ -27,7 +29,7 @@ struct nlist *lookup(char *s)
 }
 
 /* install: put (name, defn) in hashtab */
-struct nlist *install(char *name; char *defn)
+struct nlist *install(char *name, char *defn)
 {
 	struct nlist *np;
 	unsigned int hashval;
@@ -67,12 +69,14 @@ int undef(char *name)
 	/* check if hashtab is null or if first one matches first */
 	if(npcur == NULL)
 		return 0; /* not found */
-	else if(strcmp(name, npcur) == 0)
+	/* we found match in first one we can just update hashtab[hashval] */
+	else if(strcmp(name, npcur->name) == 0)
 	{
 		hashtab[hashval] = npcur->next;
 		free((void *) npcur);
 		return 1; /* found */
 	}
+	/* we need to look through several, lets setup to do so */
 	else
 	{
 		npprev = npcur;
@@ -82,7 +86,7 @@ int undef(char *name)
 	/* walking along a linked list comparing with previous */
 	for( ; npcur != NULL; npcur = npcur->next)
 	{
-		if(strcmp(name, np->name) == 0)
+		if(strcmp(name, npcur->name) == 0)
 		{
 			/* make previous block point to block of after the
 			 * current one */

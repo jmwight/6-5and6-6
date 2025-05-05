@@ -1,5 +1,6 @@
 #include "getword/getch.c"
 #include <ctype.h>
+#include <string.h>
 
 #define BUFSIZE	40960 /* arbitrarily picked */
 #define WSIZE	30 /* 99.999% for length */
@@ -43,5 +44,23 @@ int main(void)
 		
 		/* check to make sure this is safe in buffer overflow condition */
 		*bufp = c;
+
+		/* read preprocessor directive if we are on one and do what's necessary */
+		if(preprocdir)
+		{
+			/* get directive first */
+			while(!isspace(c = getch) && c != EOF)
+			{
+				*w++ = c;
+				*bufp++ = c;
+			}
+			if(strcmp(w, "define"))
+				; /* TODO: finish this */
+			else if(strcmp(w, "undef"))
+				;  /* TODO: finish this */
+
+			preprocdir = 0;
+		}
+
 	}
 }

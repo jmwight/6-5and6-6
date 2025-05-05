@@ -1,12 +1,6 @@
-#define HASHSIZE	101
+#include "dict.h"
 
-/* table entry */
-struct nlist
-{
-	struct nlist *next; /* next block in linked list */
-	char *name; /* defined name */
-	char *defn; /* replacement text */
-}
+#define HASHSIZE	101
 
 static struct nlist *hashtab[HASHSIZE]; /* pointer table */
 

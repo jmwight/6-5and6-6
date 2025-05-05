@@ -6,12 +6,12 @@
 /* getword: get next word or character from input */
 struct attr getword(char *word, int lim)
 {
-	int c, nxt_c, firstch; 
+	int c, nxt_c, firstch;
 	static int onelncom, multilncom;
 	static struct attr wattr;
 
 	int getch(void);
-	void ungetch(int);   //try this later & remove getch.h header for learning	
+	void ungetch(int);   //try this later & remove getch.h header for learning
 
 	char *w = word;
 	wattr.func = 0;
@@ -28,7 +28,7 @@ struct attr getword(char *word, int lim)
 
 	for(firstch = 1; --lim > 0; c = getch())
 	{
-		switch(c) 
+		switch(c)
 		{
 			case '"':
 				/* flip quote on or off */

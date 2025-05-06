@@ -64,11 +64,12 @@ int main(void)
 }
 /* zoomwrite: writes all characters directly from getch into given buffer until
  * ending sequence is reached */
-char *zoomwrite(char *bufp, char* endseq)
+char *zoomwrite(char *bufp, char *bufend, char* endseq)
 {
 	int endseqlen, c;
 	endseqlen = strlen(endseq);
-	while((c = getch()) != EOF && strcmp(endseq, bufp[endseqlen * -1]) != 0)
+	while(bufp < bufend - 1 && (c = getch()) != EOF && 
+			strcmp(endseq, bufp - endseqlen) != 0)
 		*bufp++ = c;
 	return bufp;
 }

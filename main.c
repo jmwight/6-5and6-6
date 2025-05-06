@@ -4,18 +4,22 @@
 
 #define BUFSIZE	40960 /* arbitrarily picked */
 #define WSIZE	30 /* 99.999% for length */
+#define NONE		0
+#define	PREPROCDIR	1
+#define IDENTIFIER	2
 
 char *zoomwrite(char *bufp, char *bufend, char* endseq);
 
 int main(void)
 {
-	char buf[BUFSIZE], *bufp, *bufend, w[WSIZE], *wp, *preprocdirp;
+	char buf[BUFSIZE], *bufp, *bufend, *start; /* *start is pointer to to
+						      beginning of preprocessor
+						      directive or identifier*/
 	bufp = buf;
-	int wstart;
 	bufend = buf + BUFSIZE; /* first pointer not included in buf */
-	wp = w;
-	int c, preprocdir;
-	preprocdir = multilncomm = onelncomm = str = def = 0;
+	int c, state;
+	/* states: 0 = none, 1 = preprocessor directive, 2 = identifier */
+	state = NONE;
 	/* < bufend - 1 to leave an extra space to append '\0' on */
 	while((c = getch()) != EOF && bufp < bufend - 1)
 	{
@@ -35,19 +39,45 @@ int main(void)
 				endseq = "\n";
 			bufp = zoomwrite(bufp, bufend, endseq);
 		}
-		else if(isspace(c))
-			*bufp++ = c;
-		else if(preprocdir)
-		{
-			/* TODO: do some preprocessor definition undef stuff */
-		}
-		else if(c == '#')
+		else
 		{
 			*bufp++ = c;
-			preprocdirp = bufp;
-			preprocdir = 1;
+			/* start of preprocessor directive, turn on state and 
+			 * record it's starting position */
+			if(c == '#')
+			{
+				if(isalpha(c = getch()))
+				{
+					start = bufp;
+					state = PREPROCDIR;
+				}
+				ungetch(c);
+			}
+			/* end of preprocessor directive, do whatever it is */
+			if(state == PREPROCDIR && c == '\n')
+			{
+				state = NONE;
+				/* TODO: do def or undef here */
+			}
+			/* start of identifier, turn on identifier state and
+			 * record it's starting position */
+			else if(state == NONE && (isalpha(c) || c == '_'))
+			{
+				state = IDENTIFIER;
+				begin = bufp - 1;
+			}
+			/* end of identifier, turn off identifier state and
+			 * record, lookup if it's in hashtable and if it is
+			 * replace with definition inside */
+			else if(state == IDENTIFIER && isspace(c))
+			{
+				state = NONE;
+				/* TODO: lookup in hashtable and do replacement
+				 * with definition if found */
+			}
 		}
 	}
+	*bufp = '\0';
 }
 
 /* getword: gets word from input, returns length or if overflow, -1 or EOF */

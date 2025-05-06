@@ -5,63 +5,76 @@
 #define BUFSIZE	40960 /* arbitrarily picked */
 #define WSIZE	30 /* 99.999% for length */
 
+char *zoomwrite(char *bufp, char *bufend, char* endseq);
+
 int main(void)
 {
-	char buf[BUFSIZE], *bufp, w[WSIZE], *wp;
+	char buf[BUFSIZE], *bufp, *bufend, w[WSIZE], *wp, *preprocdirp;
 	bufp = buf;
+	int wstart;
+	bufend = buf + BUFSIZE; /* first pointer not included in buf */
 	wp = w;
-	int c, multilncomm, onelncomm, str, def, preprocdir;
+	int c, preprocdir;
 	preprocdir = multilncomm = onelncomm = str = def = 0;
-	while((c = getch()) != EOF)
+	/* < bufend - 1 to leave an extra space to append '\0' on */
+	while((c = getch()) != EOF && bufp < bufend - 1)
 	{
-		/* need to detect comments, strings, and leadning '#' */
-		/* turn on or off string state */
-		if(c == '"' && comm == 0)
-			str = 1;
-		else if(c == '"' && comm = 1)
-			str = 0;
-		/* turn off comment state */
+		if(c == '"')
+		{
+			/* need to leave room for '\0' possibly hence -1 */
+			bufp = zoomwrite(bufp, bufend, "\"");
+		}
 		else if(c == '/')
 		{
-			int nxtc = getch();
-			if(nxtc == EOF)
-			{
-				ungetch(nxtc);
-				break;
-			}
-			else if(nxtc == '*')
-			       multilncomm = 1;
+			int nxtc;
+		        char *endseq;
+			nxtc = getch();
+			if(nxtc == '*')
+				endseq = "*/";
 			else if(nxtc == '/')
-				onelncomm = 1;
-			ungetch(nxtc);
+				endseq = "\n";
+			bufp = zoomwrite(bufp, bufend, endseq);
 		}
-		/* turn on preprocessor directive state if not inside string or comment */
-		else if(c == '#' && !onelncomm && !multilncomm && !str)
-			preprocdir = 1;
-		/* turn off preprocessor directive or one line comment */
-		else if(c == '\n' && (preprocdir || onelncomm))
-			preprocdir = onelncomm = 0;
-		
-		/* check to make sure this is safe in buffer overflow condition */
-		*bufp = c;
-
-		/* read preprocessor directive if we are on one and do what's necessary */
-		if(preprocdir)
+		else if(isspace(c))
+			*bufp++ = c;
+		else if(preprocdir)
 		{
-			/* get directive first */
-			while(!isspace(c = getch) && c != EOF)
-			{
-				*w++ = c;
-				*bufp++ = c;
-			}
-			if(strcmp(w, "define"))
-				; /* TODO: finish this */
-			else if(strcmp(w, "undef"))
-				;  /* TODO: finish this */
-
+			/* TODO: do some preprocessor definition undef stuff */
+		}
+		else if(c == '#')
+		{
+			*bufp++ = c;
+			preprocdirp = bufp;
+			preprocdir = 1;
 		}
 	}
 }
+
+/* getword: gets word from input, returns length or if overflow, -1 or EOF */
+int getword(char *w, int mxlen)
+{
+	int c, i;
+	i = 0;
+	while(!isspace(c = getch()) && c != EOF && i < maxlen - 1)
+		w[i++] = c;
+	w[i] = '\0';
+	ungetch(c);
+	if(c == EOF)
+		return EOF;
+	else if(!isspace(c))
+		return -1;
+	else
+		return i;
+}
+
+/* addword: adds word to buffer (if possible) */
+int addword(){;}
+
+/* addspace: adds all space to buffer */
+int addspace(){;}
+
+/* addwo */
+
 /* zoomwrite: writes all characters directly from getch into given buffer until
  * ending sequence is reached */
 char *zoomwrite(char *bufp, char *bufend, char* endseq)

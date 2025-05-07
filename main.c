@@ -82,7 +82,7 @@ int main(void)
 					def = startnxtword(name, bufend);
 					defend = def;
 					while(*++defend != '\n')
-						++defend;
+						;
 					defendc = *defend;
 					*defend = '\0';
 
@@ -97,7 +97,7 @@ int main(void)
 
 					/* get the definition part and make sure
 					 * it's the same as n hashtab if it's 
-					 * defined */
+					 * defined. If it isn't add it. */
 					if(n == NULL)
 					{
 						if(install(name, def) == NULL)
@@ -138,8 +138,32 @@ int main(void)
 			else if(state == IDENTIFIER && isspace(c))
 			{
 				state = NONE;
-				/* TODO: lookup in hashtable and do replacement
-				 * with definition if found */
+				/* find end of identifier and store it */
+				char *identend, identendc;
+				while(!isspace(*++identend))
+					;
+				/* store one past end and replace with '\0' to
+				 * make a string we can input into lookup */
+				identendc = *identend;
+				*identend = '\0';
+				struct nlist *n;
+				n = lookup(start);
+				*identend = identendc;
+
+				if(n != NULL)
+				{
+					/* if we found a matching definition,
+					 * we replace string in buffer */
+					int i;
+					for(i = 0; n->defn[i] != '\0'; i++,
+							start++)
+						*start = defn[i];
+					/* if replacement is shorter than
+					 * definition we need to move buffer
+					 * pointer back to end of replacement*/
+					if(start < bufp)
+						bufp = start;
+				}
 			}
 		}
 	}

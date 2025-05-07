@@ -173,7 +173,11 @@ int main(void)
 					int i;
 					for(i = 0; n->defn[i] != '\0'; i++,
 							start++)
+					{
 						*start = n->defn[i];
+						if(start > bufp)
+							++bufp;
+					}
 					/* if replacement is shorter than
 					 * definition we need to move buffer
 					 * pointer back to end of replacement*/

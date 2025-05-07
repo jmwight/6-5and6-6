@@ -75,7 +75,7 @@ int undef(char *name)
 	{
 		hashtab[hashval] = npcur->next;
 		free((void *) npcur);
-		return 1; /* found */
+		return UNDEFSUCCESS; /* found */
 	}
 	/* we need to look through several, lets setup to do so */
 	else
@@ -93,9 +93,9 @@ int undef(char *name)
 			 * current one */
 			npprev->next = npcur->next;
 			free((void *) npcur);
-			return 1; /* found */
+			return UNDEFSUCCESS; /* found */
 		}
 		npprev = npcur;
 	}
-	return 0; /* not found */
+	return NOTFOUND; /* not found */
 }

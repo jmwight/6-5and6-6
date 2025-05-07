@@ -138,7 +138,27 @@ int main(void)
 					*nameend = nameendc;
 					*defend = defendc;
 				}
+				else if(strncmp(start, "undef", strlen("undef")) == 0)
+				{
+					char *name, *nameend, nameendc, defendc;
 
+					/* get name and name end */
+					name = startnxtword(start, bufend);
+
+					/* find end and store it */
+					nameend = name;
+					do
+					{
+						++nameend;
+					} while(!isspace(*nameend));
+					nameendc = *nameend;
+					*nameend = '\0'; /* to make proper string,
+							 we will change back */
+
+					if(undef(name) == NOTFOUND)
+						printf("definition not found\n");
+					*nameend = nameendc;
+				}
 			}
 			/* start of identifier, turn on identifier state and
 			 * record it's starting position */

@@ -87,18 +87,19 @@ int main(void)
 					do
 					{
 						++nameend;
-					} while(!isspace(nameend));
+					} while(!isspace(*nameend));
 					nameendc = *nameend;
-					*nameend = '\0'; /* to make proper string,
-							 we will change back */
 
 					/* get definition and definition end */
 					def = startnxtword(name, bufend);
 					defend = def;
 					while(*++defend != '\n')
 						;
+
 					defendc = *defend;
 					*defend = '\0';
+					*nameend = '\0'; /* to make proper string,
+							 we will change back */
 
 					/* if it is already defined and the define
 					 * defines it differently without an undef
@@ -208,10 +209,10 @@ char *startnxtword(char *pos, char *strend)
 	do
 	{
 		pos++;
-	} while(!isspace(pos) && pos < strend - 1);
+	} while(!isspace(*pos) && pos < strend - 1);
 	do
 	{
 		pos++;
-	} while(isspace(pos) && pos < strend - 1);
+	} while(isspace(*pos) && pos < strend - 1);
 	return pos;
 }

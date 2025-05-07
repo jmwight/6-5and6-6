@@ -7,6 +7,8 @@
 #define NONE		0
 #define	PREPROCDIR	1
 #define IDENTIFIER	2
+#define NOMEMERR	12
+#define REDEFERR	20
 
 char *zoomwrite(char *bufp, char *bufend, char* endseq);
 char *startnxtword(char *pos, char *strend);
@@ -80,9 +82,7 @@ int main(void)
 					def = startnxtword(name, bufend);
 					defend = def;
 					while(*++defend != '\n')
-					{
 						++defend;
-					}
 					defendc = *defend;
 					*defend = '\0';
 
@@ -100,8 +100,25 @@ int main(void)
 					 * defined */
 					if(n == NULL)
 					{
-						
+						if(install(name, def) == NULL)
+						{
+							printf("Error: out of 
+								memory\n");
+							return NOMEMERR;
+						}
 					}
+					else
+					{
+						if(strcmp(n->defn, def) != 0)
+						{
+							printf("Error 
+								redefining 
+								without 
+								undef \n");
+							return REDEFERR;
+						}
+					}
+
 					/* reset characters back from '\0' */
 					*nameend = nameendc;
 					*defend = defendc;

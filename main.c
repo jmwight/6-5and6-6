@@ -106,7 +106,7 @@ int main(void)
 					 * throw an error (ANSI C standards from C
 					 * Programming book appendix) */
 					
-					struct nlist *n = lookup(start);
+					struct nlist *n = lookup(name);
 					//*nameend = endc; /* revert back 
 
 
@@ -126,9 +126,9 @@ int main(void)
 					{
 						if(strcmp(n->defn, def) != 0)
 						{
-							printf("Error "
-								"redefining"
-								"without"
+							printf("Error: "
+								"redefinition "
+								"without "
 								"undef\n");
 							return REDEFERR;
 						}

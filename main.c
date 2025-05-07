@@ -150,13 +150,13 @@ int main(void)
 			/* end of identifier, turn off identifier state and
 			 * record, lookup if it's in hashtable and if it is
 			 * replace with definition inside */
-			else if(state == IDENTIFIER && isspace(c))
+			else if(state == IDENTIFIER && !isalnum(c) && c != '_')
 			{
 				state = NONE;
 				/* find end of identifier and store it */
 				char *identend, identendc;
 				identend = start;
-				while(!isspace(*++identend))
+				while(isalnum(*++identend))
 					;
 				/* store one past end and replace with '\0' to
 				 * make a string we can input into lookup */

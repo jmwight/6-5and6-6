@@ -193,6 +193,8 @@ char *zoomwrite(char *bufp, char *bufend, char* endseq)
 {
 	int endseqlen, c;
 	endseqlen = strlen(endseq);
+	if(bufp < bufend - 1 && (c = getch()) != EOF)
+		*bufp++ = c;
 	while(bufp < bufend - 1 && (c = getch()) != EOF && 
 			strcmp(endseq, bufp - endseqlen) != 0)
 		*bufp++ = c;

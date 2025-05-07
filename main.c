@@ -5,7 +5,6 @@
 #include <string.h>
 
 #define BUFSIZE	40960 /* arbitrarily picked */
-#define WSIZE	30 /* 99.999% for length */
 #define NONE		0
 #define	PREPROCDIR	1
 #define IDENTIFIER	2

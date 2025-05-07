@@ -1,4 +1,6 @@
-#include "getword/getch.c"
+#include "getword/getch.h"
+#include "dict.h"
+#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -74,7 +76,7 @@ int main(void)
 					{
 						++nameend;
 					} while(!isspace(nameend));
-					nameeendc = *nameend;
+					nameendc = *nameend;
 					*nameend = '\0'; /* to make proper string,
 							 we will change back */
 
@@ -102,8 +104,8 @@ int main(void)
 					{
 						if(install(name, def) == NULL)
 						{
-							printf("Error: out of 
-								memory\n");
+							printf("Error: out of" 
+								"memory\n");
 							return NOMEMERR;
 						}
 					}
@@ -111,10 +113,10 @@ int main(void)
 					{
 						if(strcmp(n->defn, def) != 0)
 						{
-							printf("Error 
-								redefining 
-								without 
-								undef \n");
+							printf("Error "
+								"redefining"
+								"without"
+								"undef\n");
 							return REDEFERR;
 						}
 					}
@@ -130,7 +132,7 @@ int main(void)
 			else if(state == NONE && (isalpha(c) || c == '_'))
 			{
 				state = IDENTIFIER;
-				begin = bufp - 1;
+				start = bufp - 1;
 			}
 			/* end of identifier, turn off identifier state and
 			 * record, lookup if it's in hashtable and if it is
@@ -157,7 +159,7 @@ int main(void)
 					int i;
 					for(i = 0; n->defn[i] != '\0'; i++,
 							start++)
-						*start = defn[i];
+						*start = n->defn[i];
 					/* if replacement is shorter than
 					 * definition we need to move buffer
 					 * pointer back to end of replacement*/
@@ -175,7 +177,7 @@ int getword(char *w, int mxlen)
 {
 	int c, i;
 	i = 0;
-	while(!isspace(c = getch()) && c != EOF && i < maxlen - 1)
+	while(!isspace(c = getch()) && c != EOF && i < mxlen - 1)
 		w[i++] = c;
 	w[i] = '\0';
 	ungetch(c);
@@ -214,10 +216,10 @@ char *startnxtword(char *pos, char *strend)
 	do
 	{
 		pos++;
-	} while(!isspace(name) && name < strend - 1);
+	} while(!isspace(pos) && pos < strend - 1);
 	do
 	{
 		pos++;
-	} while(isspace(name) && name < strend - 1);
+	} while(isspace(pos) && pos < strend - 1);
 	return pos;
 }

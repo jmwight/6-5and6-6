@@ -175,14 +175,15 @@ int main(void)
 							start++)
 					{
 						*start = n->defn[i];
-						if(start > bufp)
-							++bufp;
 					}
+					if(start > bufp)
+						bufp = start;
 					/* if replacement is shorter than
 					 * definition we need to move buffer
 					 * pointer back to end of replacement*/
 					if(start < bufp)
 						bufp = start;
+					*bufp++ = c;
 				}
 			}
 		}

@@ -9,6 +9,7 @@
 #define IDENTIFIER	2
 
 char *zoomwrite(char *bufp, char *bufend, char* endseq);
+char *startnxtword(char *pos, char *strend);
 
 int main(void)
 {
@@ -57,7 +58,55 @@ int main(void)
 			if(state == PREPROCDIR && c == '\n')
 			{
 				state = NONE;
-				/* TODO: do def or undef here */
+				/* define statement */
+				if(strncmp(start, "define", strlen("define")) == 0)
+				{
+					char *name, *nameend, *def, *defend;
+					char nameendc, defendc;
+
+					/* get name and name end */
+					name = startnxtword(start, bufend);
+					/* find end and store it */
+					nameend = name;
+					do
+					{
+						++nameend;
+					} while(!isspace(nameend));
+					nameeendc = *nameend;
+					*nameend = '\0'; /* to make proper string,
+							 we will change back */
+
+					/* get definition and definition end */
+					def = startnxtword(name, bufend);
+					defend = def;
+					while(*++defend != '\n')
+					{
+						++defend;
+					}
+					defendc = *defend;
+					*defend = '\0';
+
+					/* if it is already defined and the define
+					 * defines it differently without an undef
+					 * throw an error (ANSI C standards from C
+					 * Programming book appendix) */
+					
+					struct nlist *n = lookup(start);
+					//*nameend = endc; /* revert back 
+
+
+					/* get the definition part and make sure
+					 * it's the same as n hashtab if it's 
+					 * defined */
+					if(n == NULL)
+					{
+						
+					}
+					/* reset characters back from '\0' */
+					*nameend = nameendc;
+					*defend = defendc;
+				}
+
 			}
 			/* start of identifier, turn on identifier state and
 			 * record it's starting position */
@@ -115,4 +164,19 @@ char *zoomwrite(char *bufp, char *bufend, char* endseq)
 			strcmp(endseq, bufp - endseqlen) != 0)
 		*bufp++ = c;
 	return bufp;
+}
+
+/* startnxtword: get position of next word in given string from current spot. 
+ * strend is the pointer to one past the end of the array */
+char *startnxtword(char *pos, char *strend)
+{
+	do
+	{
+		pos++;
+	} while(!isspace(name) && name < strend - 1);
+	do
+	{
+		pos++;
+	} while(isspace(name) && name < strend - 1);
+	return pos;
 }

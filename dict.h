@@ -6,7 +6,8 @@ struct nlist
 	char *defn; /* replacement text */
 };
 
-unsigned int hash(char *s);
 struct nlist *lookup(char *s);
 struct nlist *install(char *name, char *defn);
 int undef(char *name);
+unsigned int hash(char *s);
+

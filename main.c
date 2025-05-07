@@ -154,7 +154,6 @@ int main(void)
 					nameendc = *nameend;
 					*nameend = '\0'; /* to make proper string,
 							 we will change back */
-
 					if(undef(name) == NOTFOUND)
 						printf("definition not found\n");
 					*nameend = nameendc;

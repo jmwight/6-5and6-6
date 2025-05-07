@@ -69,7 +69,7 @@ int undef(char *name)
 
 	/* check if hashtab is null or if first one matches first */
 	if(npcur == NULL)
-		return 0; /* not found */
+		return NOTFOUND; /* not found */
 	/* we found match in first one we can just update hashtab[hashval] */
 	else if(strcmp(name, npcur->name) == 0)
 	{

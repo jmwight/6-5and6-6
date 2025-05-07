@@ -27,6 +27,7 @@ int main(void)
 	/* < bufend - 1 to leave an extra space to append '\0' on */
 	while((c = getch()) != EOF && bufp < bufend - 1)
 	{
+		*bufp++ = c;
 		if(c == '"')
 		{
 			/* need to leave room for '\0' possibly hence -1 */
@@ -37,15 +38,27 @@ int main(void)
 			int nxtc;
 		        char *endseq;
 			nxtc = getch();
-			if(nxtc == '*')
-				endseq = "*/";
-			else if(nxtc == '/')
-				endseq = "\n";
-			bufp = zoomwrite(bufp, bufend, endseq);
+			switch(nxtc)
+			{
+				case '*':
+					endseq = "*/";
+					break;
+				case '/':
+					endseq = "\n";
+					break;
+				default:
+					ungetch(nxtc);
+					nxtc = 0x18; /* ASCII for cancel */
+					break;
+			}
+			if(nxtc != 0x18)
+			{
+				*bufp++ = nxtc;
+				bufp = zoomwrite(bufp, bufend, endseq);
+			}
 		}
 		else
 		{
-			*bufp++ = c;
 			/* start of preprocessor directive, turn on state and 
 			 * record it's starting position */
 			if(c == '#')
@@ -141,6 +154,7 @@ int main(void)
 				state = NONE;
 				/* find end of identifier and store it */
 				char *identend, identendc;
+				identend = start;
 				while(!isspace(*++identend))
 					;
 				/* store one past end and replace with '\0' to
@@ -169,6 +183,8 @@ int main(void)
 		}
 	}
 	*bufp = '\0';
+
+	printf("\nResultant Code:\n%s\n", buf);
 }
 
 /* zoomwrite: writes all characters directly from getch into given buffer until

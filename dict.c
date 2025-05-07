@@ -46,7 +46,8 @@ struct nlist *install(char *name, char *defn)
 		/* make new block next pointer point to current first block in
 		 * linked list */
 		np->next = hashtab[hashval]; 
-		/* make hashtable point to newly created block */
+		/* make hashtable point to newly created block (putting it at
+		 * the beginning */
 		hashtab[hashval] = np;
 	}
 	/* already there */

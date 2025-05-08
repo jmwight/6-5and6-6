@@ -5,9 +5,7 @@
 #include <string.h>
 
 #define BUFSIZE	40960 /* arbitrarily picked */
-#define NONE		0
-#define	PREPROCDIR	1
-#define IDENTIFIER	2
+enum { NONE, PREPROCDIR, IDENTIFIER };
 #define NOMEMERR	12
 #define REDEFERR	20
 

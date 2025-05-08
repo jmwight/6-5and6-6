@@ -92,6 +92,8 @@ int undef(char *name)
 			/* make previous block point to block of after the
 			 * current one */
 			npprev->next = npcur->next;
+			free((void *) npcur->name);
+			free((void *) npcur->defn);
 			free((void *) npcur);
 			return UNDEFSUCCESS; /* found */
 		}
